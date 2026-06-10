@@ -2577,4 +2577,150 @@ html body { background: var(--token-24930864-085b-4c5c-af6f-277c40aa379f, rgb(25
 		
 
 
+
+<script>
+// ===== Portfolio CMS - data.json loader =====
+(function() {
+  fetch('data.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(function(d) {
+
+      // Helper: replace text in all matching elements
+      function setText(selector, value) {
+        if (!value) return;
+        document.querySelectorAll(selector).forEach(function(el) {
+          el.textContent = value;
+        });
+      }
+
+      // Helper: replace href in all matching anchor elements
+      function setHref(selector, value) {
+        if (!value) return;
+        document.querySelectorAll(selector).forEach(function(el) {
+          el.href = value;
+        });
+      }
+
+      // ── CONTACT: email ──
+      if (d.contact) {
+        document.querySelectorAll('a[href*="mailto"]').forEach(function(el) {
+          el.href = 'mailto:' + d.contact.email;
+          el.textContent = d.contact.email;
+        });
+        document.querySelectorAll('a[href*="tel"]').forEach(function(el) {
+          el.href = 'tel:' + d.contact.phone;
+          el.textContent = d.contact.phone;
+        });
+        // Address
+        document.querySelectorAll('a[href*="google.co.in/maps"], a[href*="maps.google"]').forEach(function(el) {
+          if (d.contact.address) el.textContent = d.contact.address;
+        });
+        // Booking URL
+        document.querySelectorAll('a[href*="cal.com"]').forEach(function(el) {
+          el.href = d.contact.booking_url || el.href;
+        });
+        // Social links
+        var socials = ['instagram', 'twitter', 'youtube', 'linkedin'];
+        var domains = ['instagram.com', 'x.com', 'youtube.com', 'linkedin.com'];
+        socials.forEach(function(key, i) {
+          if (!d.contact[key]) return;
+          document.querySelectorAll('a[href*="' + domains[i] + '"]').forEach(function(el) {
+            el.href = d.contact[key];
+          });
+        });
+        // Footer CTA
+        if (d.contact.footer_cta) {
+          document.querySelectorAll('h2').forEach(function(el) {
+            if (el.textContent.trim() === "It's time to level up your brand") {
+              el.textContent = d.contact.footer_cta;
+            }
+          });
+        }
+      }
+
+      // ── HERO ──
+      if (d.hero) {
+        if (d.hero.available_text) {
+          document.querySelectorAll('p').forEach(function(el) {
+            if (el.textContent.trim() === 'Available for the project') {
+              el.textContent = d.hero.available_text;
+            }
+          });
+        }
+        if (d.hero.tagline) {
+          document.querySelectorAll('p').forEach(function(el) {
+            if (el.textContent.includes('Guided by clarity and curiosity')) {
+              el.textContent = d.hero.tagline;
+            }
+          });
+        }
+        if (d.hero.established) {
+          document.querySelectorAll('div').forEach(function(el) {
+            if (el.textContent.trim() === 'Est.2015' && el.children.length === 0) {
+              el.textContent = d.hero.established;
+            }
+          });
+        }
+      }
+
+      // ── ABOUT ──
+      if (d.about) {
+        if (d.about.letter_body_1) {
+          document.querySelectorAll('p').forEach(function(el) {
+            if (el.textContent.includes("At 3 Circles, we've always believed")) {
+              el.textContent = d.about.letter_body_1;
+            }
+          });
+        }
+        if (d.about.letter_body_2) {
+          document.querySelectorAll('p').forEach(function(el) {
+            if (el.textContent.includes('2023 was a challenging year')) {
+              el.textContent = d.about.letter_body_2;
+            }
+          });
+        }
+        if (d.about.letter_body_3) {
+          document.querySelectorAll('p').forEach(function(el) {
+            if (el.textContent.includes('Looking ahead, our vision for 2025')) {
+              el.textContent = d.about.letter_body_3;
+            }
+          });
+        }
+        if (d.about.quote) {
+          document.querySelectorAll('p').forEach(function(el) {
+            if (el.textContent.includes("Growth isn't a straight line")) {
+              el.textContent = d.about.quote;
+            }
+          });
+        }
+        if (d.about.founder_name) {
+          document.querySelectorAll('h4').forEach(function(el) {
+            if (el.textContent.trim() === 'Michael rey') {
+              el.textContent = d.about.founder_name;
+            }
+          });
+        }
+        if (d.about.founder_role) {
+          document.querySelectorAll('p').forEach(function(el) {
+            if (el.textContent.trim() === 'Founder, Three Circles') {
+              el.textContent = d.about.founder_role;
+            }
+          });
+        }
+        if (d.about.section_title) {
+          document.querySelectorAll('h2').forEach(function(el) {
+            if (el.textContent.includes("We don't do fluff")) {
+              el.innerHTML = d.about.section_title;
+            }
+          });
+        }
+      }
+
+    })
+    .catch(function(e) {
+      // data.json not found or parse error — silently ignore, show original content
+      console.log('Portfolio CMS: data.json not loaded', e.message);
+    });
+})();
+</script>
 </body></html></div></body></html></div></body></html>
