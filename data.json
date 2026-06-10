@@ -1,0 +1,213 @@
+{
+  "hero": {
+    "name_first": "akira",
+    "name_last": "chen",
+    "tagline": "Guided by clarity and curiosity, I strive to achieve better stories, keep honest design, dream fearlessly, and create meaningful experiences.",
+    "cta_text": "get started now",
+    "established": "Est.2015",
+    "available_text": "Available for the project"
+  },
+  "about": {
+    "section_title": "We don't do fluff. Just focused, award-winning work that speaks to your audience and delivers real results.",
+    "founder_name": "Michael rey",
+    "founder_role": "Founder, Three Circles",
+    "letter_greeting": "Dear friends,",
+    "letter_body_1": "At 3 Circles, we've always believed in building more than just websites—we build connections, experiences, and trust. As we reflect on our path so far, it's clear that growth is never linear. It comes with highs, lows, and lessons that shape who we are today.",
+    "letter_body_2": "2023 was a challenging year for us. We had to make some tough decisions, scale back operations, and rethink our priorities.",
+    "letter_body_3": "Looking ahead, our vision for 2025 is simple yet ambitious: refine our craft, strengthen our brand, and continue growing sustainably.",
+    "quote": "\"Growth isn't a straight line — it's the courage to rebuild, refine, and rise stronger than before, turning every challenge into a stepping stone toward a future we're proud to create.\""
+  },
+  "contact": {
+    "email": "hello@example.com",
+    "phone": "+123-456-7890",
+    "address": "123 remote work avenue, san francisco, ca 94105",
+    "booking_url": "http://cal.com/",
+    "footer_cta": "It's time to level up your brand",
+    "instagram": "https://www.instagram.com/",
+    "twitter": "https://x.com/",
+    "youtube": "https://www.youtube.com/",
+    "linkedin": "https://www.linkedin.com/"
+  },
+  "skills": [
+    "Creative approach",
+    "Clear strategy",
+    "Lasting impact"
+  ],
+  "services": [
+    {
+      "id": 1,
+      "title": "Brand strategy",
+      "tags": ["Market positioning", "Audience research"]
+    },
+    {
+      "id": 2,
+      "title": "Brand guidelines",
+      "tags": ["brand audit", "visual evolution", "migration strategy"]
+    },
+    {
+      "id": 3,
+      "title": "Rebranding & brand refresh",
+      "tags": ["Social & content assets", "Responsiveness"]
+    },
+    {
+      "id": 4,
+      "title": "Packaging design",
+      "tags": ["Color systems", "Visual usage rules", "Copy style", "Asset library setup"]
+    },
+    {
+      "id": 5,
+      "title": "Virtual identity design",
+      "tags": ["Structural concepting", "Shelf impact analysis"]
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "title": "The Bold Coach",
+      "category": "Coaching, female entrepreneur",
+      "year": "2025",
+      "image": "https://framerusercontent.com/images/dUn1icWRzytnyPL83HNAC2QxzI.jpg?width=1400&height=650",
+      "url": "#",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "Art By Liora",
+      "category": "Portfolio website, artist",
+      "year": "2024",
+      "image": "https://framerusercontent.com/images/yBkMfuBWYvLOn2duo0PdDtLoU.jpg?width=1400&height=650",
+      "url": "#",
+      "featured": false
+    },
+    {
+      "id": 3,
+      "title": "Alex Rey Creative",
+      "category": "Designer portfolio, freelancer",
+      "year": "2023",
+      "image": "https://framerusercontent.com/images/ktPHjCuIErnOoG1BPysqhtv8RC0.jpg?width=1400&height=650",
+      "url": "#",
+      "featured": false
+    },
+    {
+      "id": 4,
+      "title": "Studio Haven",
+      "category": "Creative studio, fashion designer",
+      "year": "2022",
+      "image": "https://framerusercontent.com/images/h0mV9Qi9c17r629V7vKSwTw9HB4.jpg?width=1400&height=650",
+      "url": "#",
+      "featured": false
+    },
+    {
+      "id": 5,
+      "title": "Mindset Method",
+      "category": "Life coach, wellness trainer",
+      "year": "2022",
+      "image": "https://framerusercontent.com/images/YMBp9FSoc4CCy0g5MVt5aVBcvH0.jpg?width=1400&height=650",
+      "url": "#",
+      "featured": false
+    },
+    {
+      "id": 6,
+      "title": "Create With Lani",
+      "category": "Content creator, educator",
+      "year": "2021",
+      "image": "https://framerusercontent.com/images/FUx9ElDEQUIdDArSgTgUt7Mo8pY.jpg?width=1400&height=650",
+      "url": "#",
+      "featured": false
+    }
+  ],
+  "awards": [
+    {
+      "id": 1,
+      "name": "Brand impact awards",
+      "description": "Best brand identity for tech",
+      "year": "2025"
+    },
+    {
+      "id": 2,
+      "name": "CSS design awards",
+      "description": "Best UI/UX for emerging brands",
+      "year": "2023"
+    },
+    {
+      "id": 3,
+      "name": "Designweek global",
+      "description": "Best rebrand Strategy",
+      "year": "2024"
+    },
+    {
+      "id": 4,
+      "name": "Behance featured project",
+      "description": "The top pick in branding",
+      "year": "2021"
+    },
+    {
+      "id": 5,
+      "name": "International design awards",
+      "description": "Brand identity for consumer goods",
+      "year": "2021"
+    },
+    {
+      "id": 6,
+      "name": "Red dot design awards",
+      "description": "Best use of typography in branding",
+      "year": "2020"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": 1,
+      "name": "Maya lin",
+      "role": "Founder, luna botanicals",
+      "avatar": "https://framerusercontent.com/images/CSXZXEKDft8y58gead58gSKEpS4.jpg?width=100&height=100",
+      "text": "They understood our complex startup vision and brought it to life with clarity, confidence, and incredible attention to detail."
+    },
+    {
+      "id": 2,
+      "name": "Lena torres",
+      "role": "Manager",
+      "avatar": "https://framerusercontent.com/images/RaHJbXO2J2TL51JPIktUkQrNc.jpg?width=100&height=100",
+      "text": "We saw a 2x increase in engagement within weeks. we now attract our dream clients and look like the premium brand we are."
+    },
+    {
+      "id": 3,
+      "name": "Drew kim",
+      "role": "Co-founder, Loopwave",
+      "avatar": "https://framerusercontent.com/images/wnIy8W9r8Ui1p9DnvJ4gfkBQQ.jpg?width=100&height=100",
+      "text": "They transformed scattered ideas into a stunning, unified brand presence. strategic minds with design mastery — a rare mix."
+    },
+    {
+      "id": 4,
+      "name": "Michael rey",
+      "role": "Creative director",
+      "avatar": "https://framerusercontent.com/images/ydhTn3OnZRpEEPjjrDLMUf4xlE.jpg?width=100&height=100",
+      "text": "They helped us redefine our brand identity, and the response from our customers has been overwhelming."
+    }
+  ],
+  "blog": [
+    {
+      "id": 1,
+      "title": "Why your brand needs a story before a logo",
+      "category": "Branding",
+      "date": "Nov 13, 2025",
+      "image": "https://framerusercontent.com/images/rAhx0TkmcnYYZFtki4VKhJbO4.jpg?width=810&height=420",
+      "url": "#"
+    },
+    {
+      "id": 2,
+      "title": "2025 branding trends that actually matter",
+      "category": "UX Design",
+      "date": "Nov 5, 2025",
+      "image": "https://framerusercontent.com/images/A8W14ZlHcpS9tEOuuRNFj5MIuw.jpg?width=810&height=420",
+      "url": "#"
+    },
+    {
+      "id": 3,
+      "title": "The power of minimalist design in bold branding",
+      "category": "UI Design",
+      "date": "Oct 30, 2025",
+      "image": "https://framerusercontent.com/images/MiynMkH9DwYlJHcGF0ByXn84Vww.jpg?width=810&height=420",
+      "url": "#"
+    }
+  ]
+}

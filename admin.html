@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>後台管理 — Portfolio Admin</title>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --border: #e2ddd6;
+    --border-dashed: rgba(150,140,125,0.4);
+    --text: #1c1b18;
+    --text-muted: #675e50;
+    --accent: #f06231;
+    --accent-yellow: #ffe479;
+    --accent-light: #fffcea;
+    --success: #4cb535;
+    --danger: #e03e3e;
+    --radius: 8px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Login Screen */
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: var(--text);
+  }
+
+  .login-box {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 48px 40px;
+    width: 360px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+  }
+
+  .login-box h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .login-box p {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+
+  .login-box input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    background: var(--bg);
+    color: var(--text);
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .login-box input:focus { border-color: var(--accent); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+
+  .btn:hover { opacity: 0.85; }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background: var(--text);
+    color: #fff;
+    width: 100%;
+    justify-content: center;
+    padding: 13px;
+  }
+
+  .btn-accent {
+    background: var(--accent-yellow);
+    color: var(--text);
+  }
+
+  .btn-danger {
+    background: #fff0f0;
+    color: var(--danger);
+    border: 1.5px solid #ffd0d0;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1.5px dashed var(--border);
+  }
+
+  .btn-success {
+    background: var(--success);
+    color: #fff;
+  }
+
+  .login-error {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 8px;
+    display: none;
+  }
+
+  /* App Layout */
+  #app { display: none; }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 220px;
+    background: var(--text);
+    padding: 24px 0;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .sidebar-logo p {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 2px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+  }
+
+  .nav-item:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.05); }
+
+  .nav-item.active {
+    color: var(--accent-yellow);
+    border-left-color: var(--accent-yellow);
+    background: rgba(255,228,121,0.07);
+  }
+
+  .nav-icon { font-size: 16px; width: 18px; text-align: center; }
+
+  .main {
+    margin-left: 220px;
+    padding: 32px;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .topbar h1 {
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .topbar-actions { display: flex; gap: 10px; }
+
+  /* Tabs */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1.5px dashed var(--border-dashed);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  /* Form Fields */
+  .field {
+    margin-bottom: 16px;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+
+  textarea { resize: vertical; min-height: 90px; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .field-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+
+  /* Lists */
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border: 1.5px dashed var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: var(--bg);
+  }
+
+  .list-item-thumb {
+    width: 56px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    background: var(--border);
+  }
+
+  .list-item-info { flex: 1; min-width: 0; }
+  .list-item-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .list-item-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .list-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 5px;
+  }
+
+  /* Skills tags */
+  .tags-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--accent-light);
+    border: 1px dashed var(--border-dashed);
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .tag-remove {
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .tag-remove:hover { color: var(--danger); }
+
+  .tag-input-row { display: flex; gap: 8px; }
+  .tag-input-row input { flex: 1; }
+
+  /* Badge */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .badge-featured { background: var(--accent-yellow); color: var(--text); }
+  .badge-draft { background: var(--border); color: var(--text-muted); }
+
+  /* Notification */
+  #notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--text);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 9999;
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #notification.show { transform: translateX(0); }
+  #notification.success { background: var(--success); }
+  #notification.error { background: var(--danger); }
+
+  /* Download section */
+  .download-section {
+    background: linear-gradient(135deg, var(--text), #2d2c28);
+    border-radius: var(--radius);
+    padding: 28px;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  .download-section h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .download-section p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .step-list {
+    margin: 12px 0 20px;
+    padding: 0;
+  }
+
+  .step-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .step-list li:last-child { border-bottom: none; }
+
+  .step-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-yellow);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .btn-download {
+    background: var(--accent-yellow);
+    color: var(--text);
+    font-weight: 700;
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 28px;
+    width: 560px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .modal-title { font-size: 18px; font-weight: 700; }
+
+  .modal-close {
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 20px;
+    line-height: 1;
+    padding: 4px;
+  }
+
+  .modal-close:hover { color: var(--text); }
+
+  .modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>後台管理</h1>
+    <p>Portfolio Admin Panel</p>
+    <input type="password" id="password-input" placeholder="輸入管理密碼" onkeydown="if(event.key==='Enter') login()">
+    <button class="btn btn-primary" onclick="login()">登入</button>
+    <p class="login-error" id="login-error">❌ 密碼錯誤，請再試一次</p>
+    <p style="margin-top:16px; font-size:12px; color:#aaa; text-align:center">預設密碼：admin123（請修改）</p>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+  <!-- Notification -->
+  <div id="notification">✓ 已儲存</div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h2>Portfolio Admin</h2>
+      <p>內容管理後台</p>
+    </div>
+    <div class="nav-item active" onclick="showSection('dashboard')">
+      <span class="nav-icon">📊</span> 總覽 & 下載
+    </div>
+    <div class="nav-item" onclick="showSection('hero')">
+      <span class="nav-icon">🏠</span> 首頁 Hero
+    </div>
+    <div class="nav-item" onclick="showSection('about')">
+      <span class="nav-icon">👤</span> 關於我
+    </div>
+    <div class="nav-item" onclick="showSection('skills')">
+      <span class="nav-icon">⚡</span> 技能列表
+    </div>
+    <div class="nav-item" onclick="showSection('projects')">
+      <span class="nav-icon">💼</span> 作品項目
+    </div>
+    <div class="nav-item" onclick="showSection('services')">
+      <span class="nav-icon">🛠️</span> 服務項目
+    </div>
+    <div class="nav-item" onclick="showSection('awards')">
+      <span class="nav-icon">🏆</span> 獎項
+    </div>
+    <div class="nav-item" onclick="showSection('testimonials')">
+      <span class="nav-icon">💬</span> 客戶評價
+    </div>
+    <div class="nav-item" onclick="showSection('blog')">
+      <span class="nav-icon">📝</span> 部落格
+    </div>
+    <div class="nav-item" onclick="showSection('contact')">
+      <span class="nav-icon">📧</span> 聯絡資訊
+    </div>
+    <div style="margin-top: auto; padding: 20px 20px 0; border-top: 1px solid rgba(255,255,255,0.07); margin-top: 20px;">
+      <div class="nav-item" onclick="logout()" style="color: rgba(255,100,100,0.7);">
+        <span class="nav-icon">🚪</span> 登出
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div id="section-dashboard" class="section active">
+      <div class="topbar">
+        <h1>📊 總覽 & 下載</h1>
+      </div>
+
+      <div class="download-section">
+        <h3>🚀 如何更新你的網站</h3>
+        <p>編輯完內容後，下載更新的 data.json 並 push 到 GitHub，網站就會自動顯示最新內容。</p>
+        <ol class="step-list">
+          <li><span class="step-num">1</span> 在左側選單編輯你想更新的內容區塊</li>
+          <li><span class="step-num">2</span> 點擊下方「下載 data.json」按鈕</li>
+          <li><span class="step-num">3</span> 將下載的 data.json 替換 GitHub 專案中的同名檔案</li>
+          <li><span class="step-num">4</span> 在終端機執行：<code style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:3px; font-size:12px;">git add . && git commit -m "update content" && git push</code></li>
+          <li><span class="step-num">5</span> 等待 1-2 分鐘，GitHub Pages 自動部署完成 ✓</li>
+        </ol>
+        <button class="btn btn-download" onclick="downloadJSON()">⬇️ 下載 data.json</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📋 內容快覽</div>
+        </div>
+        <div id="dashboard-stats" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 14px;"></div>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div id="section-hero" class="section">
+      <div class="topbar">
+        <h1>🏠 首頁 Hero</h1>
+        <div class="topbar-actions">
+          <button class="btn btn-accent" onclick="saveSection('hero')">儲存</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="field-row">
+          <div class="field">
+            <label>名字（大字）</label>
+            <input type="text" id="hero-name_first" placeholder="akira">
+          </div>
+          <div class="field">
+            <label>姓氏</label>
+            <input type="text" id="hero-name_last" placeholder="chen">
+          </div>
+        </div>
+        <div class="field">
+          <label>個人簡介 Tagline</label>
+          <textarea id="hero-tagline" placeholder="Guided by clarity and curiosity..."></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>CTA 按鈕文字</label>
+            <input type="text" id="hero-cta_text">
+          </div>
+          <div class="field">
+            <label>成立年份標示</label>
+            <input type="text" id="hero-established" placeholder="Est.2015">
+          </div>
+        </div>
+        <div class="field">
+          <label>狀態文字（綠點旁）</label>
+          <input type="text" id="hero-available_text" placeholder="Available for the project">
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="section-about" class="section">
+      <div class="topbar">
+        <h1>👤 關於我</h1>
+        <div class="topbar-actions">
+          <button class="btn btn-accent" onclick="saveSection('about')">儲存</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">標題</div></div>
+        <div class="field">
+          <label>About 區塊大標題</label>
+          <textarea id="about-section_title"></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">創辦人信件</div></div>
+        <div class="field-row">
+          <div class="field">
+            <label>創辦人姓名</label>
+            <input type="text" id="about-founder_name">
+          </div>
+          <div class="field">
+            <label>創辦人職稱</label>
+            <input type="text" id="about-founder_role">
+          </div>
+        </div>
+        <div class="field">
+          <label>信件問候語</label>
+          <input type="text" id="about-letter_greeting">
+        </div>
+        <div class="field">
+          <label>第一段內文</label>
+          <textarea id="about-letter_body_1"></textarea>
+        </div>
+        <div class="field">
+          <label>第二段內文</label>
+          <textarea id="about-letter_body_2"></textarea>
+        </div>
+        <div class="field">
+          <label>第三段內文</label>
+          <textarea id="about-letter_body_3"></textarea>
+        </div>
+        <div class="field">
+          <label>引言 Quote</label>
+          <textarea id="about-quote"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILLS -->
+    <div id="section-skills" class="section">
+      <div class="topbar">
+        <h1>⚡ 技能列表</h1>
+        <div class="topbar-actions">
+          <button class="btn btn-accent" onclick="saveSection('skills')">儲存</button>
+        </div>
+      </div>
+      <div class="card">
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">這些技能顯示在 About 區塊的側邊列表</p>
+        <div class="tags-list" id="skills-list"></div>
+        <div class="tag-input-row">
+          <input type="text" id="skill-new-input" placeholder="輸入新技能..." onkeydown="if(event.key==='Enter') addSkill()">
+          <button class="btn btn-ghost" onclick="addSkill()">+ 新增</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div id="section-projects" class="section">
+      <div class="topbar">
+        <h1>💼 作品項目</h1>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost" onclick="openModal('project', null)">+ 新增作品</button>
+          <button class="btn btn-accent" onclick="saveSection('projects')">儲存</button>
+        </div>
+      </div>
+      <div id="projects-list"></div>
+    </div>
+
+    <!-- SERVICES -->
+    <div id="section-services" class="section">
+      <div class="topbar">
+        <h1>🛠️ 服務項目</h1>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost" onclick="openModal('service', null)">+ 新增服務</button>
+          <button class="btn btn-accent" onclick="saveSection('services')">儲存</button>
+        </div>
+      </div>
+      <div id="services-list"></div>
+    </div>
+
+    <!-- AWARDS -->
+    <div id="section-awards" class="section">
+      <div class="topbar">
+        <h1>🏆 獎項</h1>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost" onclick="openModal('award', null)">+ 新增獎項</button>
+          <button class="btn btn-accent" onclick="saveSection('awards')">儲存</button>
+        </div>
+      </div>
+      <div id="awards-list"></div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div id="section-testimonials" class="section">
+      <div class="topbar">
+        <h1>💬 客戶評價</h1>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost" onclick="openModal('testimonial', null)">+ 新增評價</button>
+          <button class="btn btn-accent" onclick="saveSection('testimonials')">儲存</button>
+        </div>
+      </div>
+      <div id="testimonials-list"></div>
+    </div>
+
+    <!-- BLOG -->
+    <div id="section-blog" class="section">
+      <div class="topbar">
+        <h1>📝 部落格</h1>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost" onclick="openModal('blog', null)">+ 新增文章</button>
+          <button class="btn btn-accent" onclick="saveSection('blog')">儲存</button>
+        </div>
+      </div>
+      <div id="blog-list"></div>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="section-contact" class="section">
+      <div class="topbar">
+        <h1>📧 聯絡資訊</h1>
+        <div class="topbar-actions">
+          <button class="btn btn-accent" onclick="saveSection('contact')">儲存</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">基本聯絡</div></div>
+        <div class="field-row">
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="contact-email">
+          </div>
+          <div class="field">
+            <label>電話</label>
+            <input type="tel" id="contact-phone">
+          </div>
+        </div>
+        <div class="field">
+          <label>地址</label>
+          <input type="text" id="contact-address">
+        </div>
+        <div class="field">
+          <label>預約連結（Cal.com 等）</label>
+          <input type="url" id="contact-booking_url">
+        </div>
+        <div class="field">
+          <label>Footer CTA 標語</label>
+          <input type="text" id="contact-footer_cta">
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">社群媒體連結</div></div>
+        <div class="field-row">
+          <div class="field">
+            <label>Instagram</label>
+            <input type="url" id="contact-instagram">
+          </div>
+          <div class="field">
+            <label>Twitter / X</label>
+            <input type="url" id="contact-twitter">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>YouTube</label>
+            <input type="url" id="contact-youtube">
+          </div>
+          <div class="field">
+            <label>LinkedIn</label>
+            <input type="url" id="contact-linkedin">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.main -->
+</div><!-- /#app -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">編輯</div>
+      <span class="modal-close" onclick="closeModal()">✕</span>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+      <button class="btn btn-accent" id="modal-save-btn" onclick="saveModal()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+const ADMIN_PASSWORD = 'admin123'; // 在這裡修改你的密碼
+
+// ===== STATE =====
+let data = null;
+let modalType = null;
+let modalIndex = null;
+
+// ===== LOGIN =====
+function login() {
+  const pwd = document.getElementById('password-input').value;
+  if (pwd === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('password-input').value = '';
+    document.getElementById('password-input').focus();
+  }
+}
+
+function logout() {
+  if (confirm('確定要登出嗎？')) {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('password-input').value = '';
+  }
+}
+
+// ===== DATA =====
+async function loadData() {
+  // Try to load from data.json (when on server), fallback to embedded default
+  try {
+    const res = await fetch('data.json?t=' + Date.now());
+    data = await res.json();
+  } catch(e) {
+    // Use default data if fetch fails
+    data = getDefaultData();
+  }
+  renderAll();
+}
+
+function getDefaultData() {
+  return {
+    hero: { name_first: "akira", name_last: "chen", tagline: "", cta_text: "get started now", established: "Est.2015", available_text: "Available for the project" },
+    about: { section_title: "", founder_name: "Michael rey", founder_role: "Founder, Three Circles", letter_greeting: "Dear friends,", letter_body_1: "", letter_body_2: "", letter_body_3: "", quote: "" },
+    contact: { email: "hello@example.com", phone: "+123-456-7890", address: "", booking_url: "http://cal.com/", footer_cta: "It's time to level up your brand", instagram: "https://www.instagram.com/", twitter: "https://x.com/", youtube: "https://www.youtube.com/", linkedin: "https://www.linkedin.com/" },
+    skills: ["Creative approach", "Clear strategy", "Lasting impact"],
+    services: [], projects: [], awards: [], testimonials: [], blog: []
+  };
+}
+
+function renderAll() {
+  renderHero();
+  renderAbout();
+  renderSkills();
+  renderProjects();
+  renderServices();
+  renderAwards();
+  renderTestimonials();
+  renderBlog();
+  renderContact();
+  renderDashboard();
+}
+
+// ===== NAVIGATION =====
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ===== SIMPLE SECTIONS =====
+function renderHero() {
+  const h = data.hero;
+  Object.keys(h).forEach(k => {
+    const el = document.getElementById('hero-' + k);
+    if (el) el.value = h[k] || '';
+  });
+}
+
+function renderAbout() {
+  const a = data.about;
+  Object.keys(a).forEach(k => {
+    const el = document.getElementById('about-' + k);
+    if (el) el.value = a[k] || '';
+  });
+}
+
+function renderContact() {
+  const c = data.contact;
+  Object.keys(c).forEach(k => {
+    const el = document.getElementById('contact-' + k);
+    if (el) el.value = c[k] || '';
+  });
+}
+
+function saveSection(section) {
+  switch(section) {
+    case 'hero':
+      Object.keys(data.hero).forEach(k => {
+        const el = document.getElementById('hero-' + k);
+        if (el) data.hero[k] = el.value;
+      });
+      break;
+    case 'about':
+      Object.keys(data.about).forEach(k => {
+        const el = document.getElementById('about-' + k);
+        if (el) data.about[k] = el.value;
+      });
+      break;
+    case 'contact':
+      Object.keys(data.contact).forEach(k => {
+        const el = document.getElementById('contact-' + k);
+        if (el) data.contact[k] = el.value;
+      });
+      break;
+    case 'skills':
+    case 'projects':
+    case 'services':
+    case 'awards':
+    case 'testimonials':
+    case 'blog':
+      // already saved to data object in real-time
+      break;
+  }
+  showNotification('✓ 已儲存！記得下載 data.json 更新網站', 'success');
+  renderDashboard();
+}
+
+// ===== SKILLS =====
+function renderSkills() {
+  const list = document.getElementById('skills-list');
+  list.innerHTML = data.skills.map((s, i) =>
+    `<div class="tag">${s}<span class="tag-remove" onclick="removeSkill(${i})">×</span></div>`
+  ).join('');
+}
+
+function addSkill() {
+  const input = document.getElementById('skill-new-input');
+  const val = input.value.trim();
+  if (!val) return;
+  data.skills.push(val);
+  input.value = '';
+  renderSkills();
+}
+
+function removeSkill(i) {
+  data.skills.splice(i, 1);
+  renderSkills();
+}
+
+// ===== PROJECTS =====
+function renderProjects() {
+  const container = document.getElementById('projects-list');
+  container.innerHTML = data.projects.map((p, i) => `
+    <div class="list-item">
+      <img class="list-item-thumb" src="${p.image || ''}" onerror="this.style.background='#eee'">
+      <div class="list-item-info">
+        <div class="list-item-title">${p.title} ${p.featured ? '<span class="badge badge-featured">Featured</span>' : ''}</div>
+        <div class="list-item-meta">${p.category} · ${p.year}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('project', ${i})">編輯</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteItem('projects', ${i})">刪除</button>
+      </div>
+    </div>
+  `).join('') || '<p style="color:var(--text-muted); font-size:13px;">尚無作品，點擊右上角「新增作品」開始</p>';
+}
+
+// ===== SERVICES =====
+function renderServices() {
+  const container = document.getElementById('services-list');
+  container.innerHTML = data.services.map((s, i) => `
+    <div class="list-item">
+      <div class="list-item-info">
+        <div class="list-item-title">${s.title}</div>
+        <div class="list-item-meta">${(s.tags||[]).join(' · ')}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('service', ${i})">編輯</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteItem('services', ${i})">刪除</button>
+      </div>
+    </div>
+  `).join('') || '<p style="color:var(--text-muted); font-size:13px;">尚無服務項目</p>';
+}
+
+// ===== AWARDS =====
+function renderAwards() {
+  const container = document.getElementById('awards-list');
+  container.innerHTML = data.awards.map((a, i) => `
+    <div class="list-item">
+      <div class="list-item-info">
+        <div class="list-item-title">${a.name}</div>
+        <div class="list-item-meta">${a.description} · ${a.year}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('award', ${i})">編輯</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteItem('awards', ${i})">刪除</button>
+      </div>
+    </div>
+  `).join('') || '<p style="color:var(--text-muted); font-size:13px;">尚無獎項</p>';
+}
+
+// ===== TESTIMONIALS =====
+function renderTestimonials() {
+  const container = document.getElementById('testimonials-list');
+  container.innerHTML = data.testimonials.map((t, i) => `
+    <div class="list-item">
+      <img class="list-item-thumb" src="${t.avatar || ''}" style="border-radius:50%;width:44px;height:44px;" onerror="this.style.background='#eee'">
+      <div class="list-item-info">
+        <div class="list-item-title">${t.name}</div>
+        <div class="list-item-meta">${t.role}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('testimonial', ${i})">編輯</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteItem('testimonials', ${i})">刪除</button>
+      </div>
+    </div>
+  `).join('') || '<p style="color:var(--text-muted); font-size:13px;">尚無客戶評價</p>';
+}
+
+// ===== BLOG =====
+function renderBlog() {
+  const container = document.getElementById('blog-list');
+  container.innerHTML = data.blog.map((b, i) => `
+    <div class="list-item">
+      <img class="list-item-thumb" src="${b.image || ''}" onerror="this.style.background='#eee'">
+      <div class="list-item-info">
+        <div class="list-item-title">${b.title}</div>
+        <div class="list-item-meta">${b.category} · ${b.date}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('blog', ${i})">編輯</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteItem('blog', ${i})">刪除</button>
+      </div>
+    </div>
+  `).join('') || '<p style="color:var(--text-muted); font-size:13px;">尚無部落格文章</p>';
+}
+
+// ===== DASHBOARD =====
+function renderDashboard() {
+  const stats = [
+    { label: '作品', count: data.projects.length, icon: '💼' },
+    { label: '服務', count: data.services.length, icon: '🛠️' },
+    { label: '獎項', count: data.awards.length, icon: '🏆' },
+    { label: '評價', count: data.testimonials.length, icon: '💬' },
+  ];
+  document.getElementById('dashboard-stats').innerHTML = stats.map(s => `
+    <div style="background:var(--bg); border-radius:8px; padding:16px; border:1.5px dashed var(--border-dashed); text-align:center;">
+      <div style="font-size:24px; margin-bottom:6px">${s.icon}</div>
+      <div style="font-size:28px; font-weight:700">${s.count}</div>
+      <div style="font-size:12px; color:var(--text-muted)">${s.label}</div>
+    </div>
+  `).join('');
+}
+
+// ===== DELETE =====
+function deleteItem(section, index) {
+  if (!confirm('確定要刪除嗎？')) return;
+  data[section].splice(index, 1);
+  switch(section) {
+    case 'projects': renderProjects(); break;
+    case 'services': renderServices(); break;
+    case 'awards': renderAwards(); break;
+    case 'testimonials': renderTestimonials(); break;
+    case 'blog': renderBlog(); break;
+  }
+  renderDashboard();
+}
+
+// ===== MODALS =====
+function openModal(type, index) {
+  modalType = type;
+  modalIndex = index;
+  const overlay = document.getElementById('modal-overlay');
+  const body = document.getElementById('modal-body');
+  const title = document.getElementById('modal-title');
+
+  const isNew = index === null;
+  const item = isNew ? {} : data[getSection(type)][index];
+
+  title.textContent = isNew ? `+ 新增${getTypeName(type)}` : `編輯${getTypeName(type)}`;
+
+  body.innerHTML = getModalForm(type, item);
+  overlay.classList.add('open');
+
+  // Init tags for service
+  if (type === 'service') {
+    window._modalTags = [...(item.tags || [])];
+    renderModalTags();
+  }
+}
+
+function getSection(type) {
+  return { project: 'projects', service: 'services', award: 'awards', testimonial: 'testimonials', blog: 'blog' }[type];
+}
+
+function getTypeName(type) {
+  return { project: '作品', service: '服務', award: '獎項', testimonial: '評價', blog: '文章' }[type];
+}
+
+function getModalForm(type, item) {
+  switch(type) {
+    case 'project': return `
+      <div class="field"><label>作品名稱</label><input type="text" id="m-title" value="${item.title||''}"></div>
+      <div class="field-row">
+        <div class="field"><label>類別 / 說明</label><input type="text" id="m-category" value="${item.category||''}"></div>
+        <div class="field"><label>年份</label><input type="text" id="m-year" value="${item.year||''}"></div>
+      </div>
+      <div class="field"><label>圖片 URL</label><input type="url" id="m-image" value="${item.image||''}"></div>
+      <div class="field"><label>作品連結 URL</label><input type="url" id="m-url" value="${item.url||'#'}"></div>
+      <div class="field"><label><input type="checkbox" id="m-featured" ${item.featured?'checked':''}> 設為 Featured（置頂大圖）</label></div>
+    `;
+    case 'service': return `
+      <div class="field"><label>服務名稱</label><input type="text" id="m-title" value="${item.title||''}"></div>
+      <div class="field">
+        <label>標籤 Tags</label>
+        <div class="tags-list" id="modal-tags-list"></div>
+        <div class="tag-input-row">
+          <input type="text" id="m-tag-input" placeholder="輸入標籤..." onkeydown="if(event.key==='Enter') addModalTag()">
+          <button class="btn btn-ghost btn-sm" onclick="addModalTag()">+ 新增</button>
+        </div>
+      </div>
+    `;
+    case 'award': return `
+      <div class="field"><label>獎項名稱</label><input type="text" id="m-name" value="${item.name||''}"></div>
+      <div class="field"><label>獎項說明</label><input type="text" id="m-description" value="${item.description||''}"></div>
+      <div class="field"><label>年份</label><input type="text" id="m-year" value="${item.year||''}"></div>
+    `;
+    case 'testimonial': return `
+      <div class="field-row">
+        <div class="field"><label>姓名</label><input type="text" id="m-name" value="${item.name||''}"></div>
+        <div class="field"><label>職稱</label><input type="text" id="m-role" value="${item.role||''}"></div>
+      </div>
+      <div class="field"><label>頭像圖片 URL</label><input type="url" id="m-avatar" value="${item.avatar||''}"></div>
+      <div class="field"><label>評語內容</label><textarea id="m-text">${item.text||''}</textarea></div>
+    `;
+    case 'blog': return `
+      <div class="field"><label>文章標題</label><input type="text" id="m-title" value="${item.title||''}"></div>
+      <div class="field-row">
+        <div class="field"><label>分類</label><input type="text" id="m-category" value="${item.category||''}"></div>
+        <div class="field"><label>日期</label><input type="text" id="m-date" value="${item.date||''}"></div>
+      </div>
+      <div class="field"><label>封面圖片 URL</label><input type="url" id="m-image" value="${item.image||''}"></div>
+      <div class="field"><label>文章連結 URL</label><input type="url" id="m-url" value="${item.url||'#'}"></div>
+    `;
+  }
+}
+
+function addModalTag() {
+  const input = document.getElementById('m-tag-input');
+  const val = input.value.trim();
+  if (!val) return;
+  window._modalTags.push(val);
+  input.value = '';
+  renderModalTags();
+}
+
+function removeModalTag(i) {
+  window._modalTags.splice(i, 1);
+  renderModalTags();
+}
+
+function renderModalTags() {
+  const list = document.getElementById('modal-tags-list');
+  if (!list) return;
+  list.innerHTML = window._modalTags.map((t, i) =>
+    `<div class="tag">${t}<span class="tag-remove" onclick="removeModalTag(${i})">×</span></div>`
+  ).join('');
+}
+
+function saveModal() {
+  const section = getSection(modalType);
+  let item = {};
+
+  switch(modalType) {
+    case 'project':
+      item = {
+        id: modalIndex !== null ? data.projects[modalIndex].id : Date.now(),
+        title: document.getElementById('m-title').value,
+        category: document.getElementById('m-category').value,
+        year: document.getElementById('m-year').value,
+        image: document.getElementById('m-image').value,
+        url: document.getElementById('m-url').value,
+        featured: document.getElementById('m-featured').checked
+      };
+      break;
+    case 'service':
+      item = {
+        id: modalIndex !== null ? data.services[modalIndex].id : Date.now(),
+        title: document.getElementById('m-title').value,
+        tags: [...window._modalTags]
+      };
+      break;
+    case 'award':
+      item = {
+        id: modalIndex !== null ? data.awards[modalIndex].id : Date.now(),
+        name: document.getElementById('m-name').value,
+        description: document.getElementById('m-description').value,
+        year: document.getElementById('m-year').value
+      };
+      break;
+    case 'testimonial':
+      item = {
+        id: modalIndex !== null ? data.testimonials[modalIndex].id : Date.now(),
+        name: document.getElementById('m-name').value,
+        role: document.getElementById('m-role').value,
+        avatar: document.getElementById('m-avatar').value,
+        text: document.getElementById('m-text').value
+      };
+      break;
+    case 'blog':
+      item = {
+        id: modalIndex !== null ? data.blog[modalIndex].id : Date.now(),
+        title: document.getElementById('m-title').value,
+        category: document.getElementById('m-category').value,
+        date: document.getElementById('m-date').value,
+        image: document.getElementById('m-image').value,
+        url: document.getElementById('m-url').value
+      };
+      break;
+  }
+
+  if (modalIndex !== null) {
+    data[section][modalIndex] = item;
+  } else {
+    data[section].push(item);
+  }
+
+  closeModal();
+
+  switch(modalType) {
+    case 'project': renderProjects(); break;
+    case 'service': renderServices(); break;
+    case 'award': renderAwards(); break;
+    case 'testimonial': renderTestimonials(); break;
+    case 'blog': renderBlog(); break;
+  }
+  renderDashboard();
+  showNotification('✓ 已儲存！記得下載 data.json', 'success');
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+  modalType = null;
+  modalIndex = null;
+}
+
+// ===== DOWNLOAD =====
+function downloadJSON() {
+  // Sync all form values before download
+  Object.keys(data.hero).forEach(k => {
+    const el = document.getElementById('hero-' + k);
+    if (el) data.hero[k] = el.value;
+  });
+  Object.keys(data.about).forEach(k => {
+    const el = document.getElementById('about-' + k);
+    if (el) data.about[k] = el.value;
+  });
+  Object.keys(data.contact).forEach(k => {
+    const el = document.getElementById('contact-' + k);
+    if (el) data.contact[k] = el.value;
+  });
+
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'data.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showNotification('⬇️ data.json 已下載！', 'success');
+}
+
+// ===== NOTIFICATION =====
+function showNotification(msg, type = 'success') {
+  const n = document.getElementById('notification');
+  n.textContent = msg;
+  n.className = 'show ' + type;
+  setTimeout(() => { n.className = ''; }, 3000);
+}
+
+// Enter to login
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('password-input').focus();
+});
+</script>
+</body>
+</html>
